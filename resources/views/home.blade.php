@@ -10,7 +10,7 @@
     <div class="container mx-auto px-4">
         <!-- Encabezado -->
         <header class="flex justify-between items-center py-6">
-            <h1 class="text-3xl font-bold">Bienvenido a Mi Aplicación</h1>
+            <h1 class="text-3xl font-bold">Bienvenido a mi Proyecto Final</h1>
             <div>
                 @if (Route::has('login'))
                     <a href="{{ route('login') }}" class="text-blue-500 hover:underline">Login</a>
@@ -21,18 +21,15 @@
             </div>
         </header>
 
-        
         <!-- Contenido Principal -->
         <main class="mt-10 text-center">
             <h2 class="text-2xl font-semibold">Explora nuestra aplicación</h2>
             <p class="mt-4 text-gray-600">Crea una cuenta o inicia sesión para comenzar.</p>
         </main>
 
-        
-
         <!-- Pie de Página -->
         <footer class="mt-10 text-center text-gray-500">
-            &copy; {{ date('Y') }} Mi Aplicación. Todos los derechos reservados.
+            &copy; {{ date('Y') }} Penguinapple los derechos reservados.
         </footer>
     </div>
 </body>

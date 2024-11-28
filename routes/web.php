@@ -4,7 +4,6 @@ use App\Http\Controllers\ClienteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
-
 Route::get('/', function () {
     return view('home');
 });
@@ -22,5 +21,6 @@ Route::middleware([
     })->name('dashboard');
     Route::post('/iClientes', [ClienteController::class, 'store']);
     Route::put('/uCliente', [ClienteController::class, 'update'])->name('cliente.update');
-    Route::delete('/dCliente', [ClienteController::class, 'destroy'])->name('clientes.destroy'); // Eliminar cliente
+    Route::delete('/dCliente', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+    Route::resource('clientes', ClienteController::class);
 });

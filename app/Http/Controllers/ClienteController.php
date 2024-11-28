@@ -4,21 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ClienteController extends Controller
 {
-    // Método para mostrar todos los clientes (usado en el dashboard)
-    public function index()
+    // Mostrar todos los clientes con filtros y búsqueda
+    public function index(Request $request)
     {
-        $clientes = Cliente::all();
-        return view('dashboard', ['clientes' => $clientes]);
+        $query = Cliente::query();
+
+        // Filtro de búsqueda por nombre o correo
+        if ($request->filled('buscar')) {
+            $query->where('nombre_c', 'like', '%' . $request->buscar . '%')
+                  ->orWhere('correo_c', 'like', '%' . $request->buscar . '%');
+        }
+
+        // Filtro por dirección (opcional, puedes cambiarlo por otro campo)
+        if ($request->filled('direccion')) {
+            $query->where('direccion_c', 'like', '%' . $request->direccion . '%');
+        }
+
+        // Paginación de resultados
+        $clientes = $query->paginate(10);
+
+        return view('clientes.index', compact('clientes'));
     }
 
-    // Método para crear un cliente (store)
+    // Métodos restantes: store, update, destroy (sin cambios)
     public function store(Request $request)
     {
-        // Validar los datos recibidos
         $validated = $request->validate([
             'nombre_c' => 'required|string|max:255',
             'correo_c' => 'required|string|email|max:255|unique:clientes',
@@ -27,36 +40,24 @@ class ClienteController extends Controller
             'clave_c' => 'required|string|min:6',
         ]);
 
-        // Crear el nuevo cliente
         Cliente::create($validated);
 
-        // Redirigir al dashboard con un mensaje de éxito
-        return redirect()->route('dashboard')->with('success', 'Cliente creado exitosamente');
+        return redirect()->route('clientes.index')->with('success', 'Cliente creado exitosamente');
     }
 
-    // Método para actualizar un cliente (update)
     public function update(Request $request)
     {
         $cliente = Cliente::findOrFail($request->id_c);
-        $cliente->nombre_c = $request->nombre_c;
-        $cliente->correo_c = $request->correo_c;
-        $cliente->telefono_c = $request->telefono_c;
-        $cliente->direccion_c = $request->direccion_c;
-        $cliente->save();
+        $cliente->update($request->only(['nombre_c', 'correo_c', 'telefono_c', 'direccion_c']));
 
-        return redirect()->route('dashboard')->with('success', 'Cliente actualizado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
-    // Método para eliminar un cliente (destroy)
     public function destroy(Request $request)
     {
-        // Buscar el cliente
         $cliente = Cliente::findOrFail($request->id_c);
-
-        // Eliminar el cliente
         $cliente->delete();
 
-        // Redirigir con mensaje de éxito
-        return redirect()->route('dashboard')->with('success', 'Cliente eliminado exitosamente');
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado exitosamente');
     }
 }
